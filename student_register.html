@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Registration | TutorHub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .form-container {
+            width: 400px;
+            margin: 40px auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-container input,
+        .form-container select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .form-container button {
+            width: 100%;
+            padding: 10px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .form-container button:hover {
+            background: #1e40af;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>🎓 Student Registration</h2>
+
+    <form method="POST">
+
+        <!-- Basic Details -->
+        <input type="text" name="name" placeholder="Student Name" required>
+
+        <input type="tel" name="mobile" placeholder="Mobile Number" required>
+
+        <input type="text" name="student_class" placeholder="Class (8th, Inter, BTech)" required>
+
+        <input type="text" name="subject" placeholder="Subject Required" required>
+
+        <label>Mode of Tuition</label>
+        <select name="mode" required>
+            <option value="">Select Mode</option>
+            <option value="home">Home</option>
+            <option value="online">Online</option>
+            <option value="both">Both</option>
+        </select>
+
+        <!-- 🏠 Address Section -->
+        <h4 style="margin-top:20px;">🏠 Address Details</h4>
+
+        <input type="text" name="house"
+               placeholder="House No & Building Name"
+               required>
+
+        <input type="text" name="city"
+               placeholder="Village / City"
+               required>
+
+        <input type="text" name="pincode"
+               placeholder="Pincode"
+               required>
+
+        <!-- 📍 Hidden Latitude & Longitude -->
+        <input type="hidden" name="latitude" id="latitude">
+        <input type="hidden" name="longitude" id="longitude">
+
+        <button type="submit">Register</button>
+
+    </form>
+</div>
+
+<!-- 📍 Get Student Location Automatically -->
+<script>
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+            document.getElementById("latitude").value = position.coords.latitude;
+            document.getElementById("longitude").value = position.coords.longitude;
+        },
+        function(error) {
+            alert("Please allow location access to register.");
+        }
+    );
+} else {
+    alert("Geolocation is not supported by this browser.");
+}
+</script>
+
+</body>
+</html>

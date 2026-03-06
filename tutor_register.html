@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tutor Registration | TutorHub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Tutor Registration</h2>
+
+    <form method="POST">
+
+        <input type="text" name="name" placeholder="Tutor Name" required>
+
+        <input type="tel"
+               name="mobile"
+               placeholder="Mobile Number"
+               pattern="[0-9]{10}"
+               maxlength="10"
+               required>
+
+        <input type="text" name="subjects" placeholder="Subjects You Can Teach" required>
+
+        <input type="text" name="classes" placeholder="Classes (eg: 6th–10th, Inter, BTech)" required>
+
+        <input type="text" name="location" placeholder="Location" required>
+
+        <label>Mode of Teaching</label>
+        <select name="mode" required>
+            <option value="">Select Mode</option>
+            <option value="home">Home</option>
+            <option value="online">Online</option>
+            <option value="both">Both</option>
+        </select>
+
+        <label>Syllabus</label>
+        <select name="syllabus" required>
+            <option value="">Select Syllabus</option>
+            <option value="ssc">SSC</option>
+            <option value="cbse">CBSE</option>
+            <option value="icse">ICSE</option>
+            <option value="state">State Board</option>
+        </select>
+
+        <input type="text" name="experience" placeholder="Experience (optional)">
+
+        <!-- 📍 Hidden Latitude & Longitude -->
+        <input type="hidden" name="latitude" id="latitude">
+        <input type="hidden" name="longitude" id="longitude">
+
+        <button type="submit">Register</button>
+
+    </form>
+</div>
+
+<!-- 📍 Get Tutor Location Automatically -->
+<script>
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+            document.getElementById("latitude").value = position.coords.latitude;
+            document.getElementById("longitude").value = position.coords.longitude;
+        },
+        function(error) {
+            alert("Please allow location access to register as tutor.");
+        }
+    );
+} else {
+    alert("Geolocation is not supported by this browser.");
+}
+</script>
+
+</body>
+</html>

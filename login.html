@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login | TutorHub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="center-body">
+
+<div class="home-container">
+
+    <!-- Logo -->
+    <img src="{{ url_for('static', filename='logo.png') }}" class="logo">
+
+    <!-- Title -->
+    <h1 class="title">TutorHub</h1>
+
+    <!-- Tagline -->
+    <p class="tagline">
+        Find the Right Tutor Near You
+    </p>
+
+    <!-- Login Card -->
+    <div class="login-card">
+
+        <h2>Login with Mobile</h2>
+
+        <p class="login-subtext">
+            Enter your registered mobile number
+        </p>
+
+        <form method="POST">
+
+            <input type="text"
+                   name="mobile"
+                   placeholder="Enter Registered Mobile"
+                   maxlength="10"
+                   required>
+
+            <button type="submit" class="btn-login">
+                Send OTP
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

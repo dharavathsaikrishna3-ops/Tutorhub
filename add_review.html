@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Review | TutorHub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .stars {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        .star {
+            color: #ccc;
+            transition: 0.2s;
+        }
+
+        .star.active {
+            color: gold;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body class="center-body">
+
+<div class="login-card">
+    <h2>⭐ Rate Your Tutor</h2>
+
+    <form method="POST">
+
+        <!-- Hidden rating input -->
+        <input type="hidden" name="rating" id="rating" required>
+
+        <!-- Stars -->
+        <div class="stars">
+            <span class="star" data-value="1">&#9733;</span>
+            <span class="star" data-value="2">&#9733;</span>
+            <span class="star" data-value="3">&#9733;</span>
+            <span class="star" data-value="4">&#9733;</span>
+            <span class="star" data-value="5">&#9733;</span>
+        </div>
+
+        <br>
+
+        <label>Review</label>
+        <textarea name="review" rows="4" placeholder="Write your review..." required></textarea>
+
+        <br><br>
+        <button type="submit">Submit Review</button>
+
+    </form>
+</div>
+
+<script>
+    const stars = document.querySelectorAll(".star");
+    const ratingInput = document.getElementById("rating");
+
+    stars.forEach(star => {
+        star.addEventListener("click", () => {
+            const value = star.getAttribute("data-value");
+            ratingInput.value = value;
+
+            stars.forEach(s => s.classList.remove("active"));
+
+            for (let i = 0; i < value; i++) {
+                stars[i].classList.add("active");
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Reviews | TutorHub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .review-box {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .stars {
+            color: gold;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard">
+
+    <div class="navbar">
+        <h2>📝 My Reviews</h2>
+        <a href="{{ url_for('tutor_dashboard') }}">⬅ Back</a>
+    </div>
+
+    {% if reviews %}
+        {% for r in reviews %}
+            <div class="review-box">
+                <div class="stars">
+                    {% for i in range(r.rating) %}
+                        ★
+                    {% endfor %}
+                </div>
+
+                <p><b>Student:</b> {{ r.student_mobile }}</p>
+                <p>{{ r.review }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No reviews available.</p>
+    {% endif %}
+
+</div>
+
+</body>
+</html>

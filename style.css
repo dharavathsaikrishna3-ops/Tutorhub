@@ -1,0 +1,206 @@
+/* ===== GLOBAL ===== */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f8fafc;   /* soft white background */
+    min-height: 100vh;
+}
+
+/* ===== CENTER ALIGN PAGES ===== */
+.center-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* ===== HOME / LOGIN CONTAINER ===== */
+.home-container {
+    text-align: center;
+}
+
+/* ===== LOGO ===== */
+.logo {
+    width: 120px;
+    margin-bottom: 10px;
+}
+
+/* ===== TITLE ===== */
+.title {
+    font-size: 40px;
+    color: #f59e0b;
+    margin-bottom: 5px;
+}
+
+/* ===== TAGLINE ===== */
+.tagline{
+    font-size:18px;
+    color:#64748b;
+    margin-bottom:25px;
+}
+
+/* ===== HOME CARD ===== */
+.home-card {
+    text-align: center;
+    background: white;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0px 12px 30px rgba(0,0,0,0.15);
+    width: 380px;
+}
+
+/* ===== LOGIN CARD ===== */
+.login-card{
+    background:white;
+    padding:35px;
+    width:340px;
+    border-radius:15px;
+    box-shadow:0px 12px 25px rgba(0,0,0,0.08);
+    text-align:center;
+}
+
+/* ===== SUBTEXT ===== */
+.login-subtext {
+    color: gray;
+    margin-bottom: 20px;
+}
+
+/* ===== INPUT FIELDS ===== */
+input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+}
+
+/* ===== BUTTONS ===== */
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    background:#2563eb;
+    color:white;
+    font-size:15px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#1d4ed8;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* ===== HOME PAGE BUTTON LINKS ===== */
+.home-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.home-buttons a {
+    text-decoration: none;
+}
+
+/* ===== DASHBOARD LAYOUT ===== */
+.layout {
+    display: flex;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    background: #111827;
+    color: white;
+    padding-top: 20px;
+    position: fixed;
+}
+
+.sidebar h2 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.sidebar a {
+    display: block;
+    padding: 12px 20px;
+    color: #d1d5db;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+    background: #1f2937;
+    color: white;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main {
+    margin-left: 220px;
+    padding: 30px;
+    width: 100%;
+}
+
+/* ===== HEADER ===== */
+.header {
+    background: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* ===== CARDS ===== */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* ===== STATUS COLORS ===== */
+.status-online {
+    color: green;
+    font-weight: bold;
+}
+
+.status-offline {
+    color: red;
+    font-weight: bold;
+}
+
+.status-pending {
+    color: orange;
+    font-weight: bold;
+}
+
+.status-accepted {
+    color: green;
+    font-weight: bold;
+}
+
+.status-rejected {
+    color: red;
+    font-weight: bold;
+}
