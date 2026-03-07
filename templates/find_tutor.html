@@ -1,1 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Find Tutors | TutorHub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .rating {
+            margin-top: 6px;
+            font-weight: bold;
+        }
+        .no-review {
+            margin-top: 6px;
+            color: gray;
+        }
+        .distance {
+            margin-top: 6px;
+            color: #007bff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
 
+<div class="top-center-container">
+
+    <h2>🔍 Find Tutors</h2>
+
+    <form method="POST" class="search-form">
+
+        <input type="text" name="subject" placeholder="Enter Subject" required>
+        <select name="sort_by" required>
+    <option value="nearest">Nearest First</option>
+    <option value="rating">Highest Rating</option>
+</select>
+
+        <select name="mode" required>
+            <option value="">Select Mode</option>
+            <option value="home">Home</option>
+            <option value="online">Online</option>
+            <option value="both">Both</option>
+        </select>
+
+        <select name="syllabus" required>
+            <option value="">Select Syllabus</option>
+            <option value="ssc">SSC</option>
+            <option value="cbse">CBSE</option>
+            <option value="icse">ICSE</option>
+            <option value="state">State Board</option>
+        </select>
+
+        <!-- 📍 Hidden Location Fields -->
+        <input type="hidden" name="latitude" id="latitude">
+        <input type="hidden" name="longitude" id="longitude">
+
+        <button type="submit">Search Tutors</button>
+
+    </form>
+
+</div>
+
+<hr>
+
+<!-- DISPLAY TUTORS -->
+<div class="main">
+
+{% if tutors %}
+    <h3>Available Tutors (Within 10 KM)</h3>
+
+    <div class="cards">
+        {% for tutor in tutors %}
+            <div class="card">
+
+                <p><strong>📘 Subject:</strong> {{ tutor.subject }}</p>
+                <p><strong>📚 Mode:</strong> {{ tutor.mode }}</p>
+                <p><strong>📖 Syllabus:</strong> {{ tutor.syllabus }}</p>
+
+                <!-- 📍 Distance Display -->
+                {% if tutor.distance %}
+                    <p class="distance">
+                        📍 {{ tutor.distance }} KM away
+                    </p>
+                {% endif %}
+
+                <!-- ⭐ Rating Display -->
+                {% if tutor.total_reviews > 0 %}
+                    <p class="rating">
+                        ⭐ {{ "%.1f"|format(tutor.avg_rating) }} / 5
+                        ({{ tutor.total_reviews }} Reviews)
+                    </p>
+                {% else %}
+                    <p class="no-review">No reviews yet</p>
+                {% endif %}
+
+                <a href="{{ url_for('book_tutor', tutor_mobile=tutor.mobile) }}">
+                    <button style="margin-top:10px;">
+                        📩 Book Tutor
+                    </button>
+                </a>
+
+            </div>
+        {% endfor %}
+    </div>
+
+{% elif tutors is not none %}
+    <p style="text-align:center; color:red;">
+        No tutors found within 10 KM.
+    </p>
+{% endif %}
+
+</div>
+
+<!-- 📍 Get Student Location -->
+<script>
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+        document.getElementById("latitude").value = position.coords.latitude;
+        document.getElementById("longitude").value = position.coords.longitude;
+    });
+} else {
+    alert("Geolocation is not supported by this browser.");
+}
+</script>
+
+</body>
+</html>
