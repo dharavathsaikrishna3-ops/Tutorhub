@@ -5,15 +5,25 @@ import requests
 import random
 import time
 import math
+import twilio
 
 from flask import Flask, render_template, request, redirect, session
 from datetime import datetime, timedelta
 from math import radians, cos, sin, sqrt, atan2
+from twilio.rest import Client
+account_sid = os.environ.get("TWILIO_ACCOUNT_SID")
+auth_token = os.environ.get("TWILIO_AUTH_TOKEN")
+
+client = Client(account_sid, auth_token)
+
+VERIFY_SERVICE_SID = os.environ.get("TWILIO_VERIFY_SERVICE_SID")
 app = Flask(__name__)
 app.secret_key = "tutorhub_secret_key"
 
 # 🔐 Razorpay Client Setup
-client = razorpay.Client(
+twilio_client = Client(account_sid, auth_token)
+
+razorpay_client = razorpay.Client(
     auth=("rzp_test_SKPN8z2DdFK2Np", "f1nK1fcw6NQj8Ykn6UW1DBjv")
 )
 # ================= DATABASE =================
@@ -128,31 +138,41 @@ create_tables()
 # ================= OTP FUNCTION =================
 def send_otp(mobile):
 
-    otp = random.randint(1000, 9999)
-
-    url = "https://www.fast2sms.com/dev/bulkV2"
-
-    payload = {
-        "variables_values": str(otp),
-        "route": "otp",
-        "numbers": mobile,
-        "sender_id": "TXTIND"
-    }
-
-    headers = {
-    "authorization": "sAvCgL7rQJWU25xRt3BSlXNMiPVf1jnYT84DHeqdupckw690hyMhI6Ja7VZnEAf94mSb1NKrldFBp2qH",
-    "Content-Type": "application/x-www-form-urlencoded"
-}
     try:
-        response = requests.post(url, data=payload, headers=headers)
+       verification = twilio_client.verify.services(
+            VERIFY_SERVICE_SID
+        ).verifications.create(
+            to="+91" + mobile,
+            channel="sms"
+        )
 
-        print("OTP Sent:", otp)
-        print("Fast2SMS Response:", response.text)
+        print("OTP sent successfully")
+        print("Status:", verification.status)
+
+        return True
 
     except Exception as e:
         print("OTP Sending Failed:", e)
+        return False
+        # ================= VERIFY OTP =================
+def verify_otp(mobile, entered_otp):
 
-    return otp
+    try:
+        verification_check = client.verify.services(
+            VERIFY_SERVICE_SID
+        ).verification_checks.create(
+            to="+91" + mobile,
+            code=entered_otp
+        )
+
+        if verification_check.status == "approved":
+            return True
+        else:
+            return False
+
+    except Exception as e:
+        print("OTP Verification Failed:", e)
+        return False
 # ================= HOME =================
 @app.route("/")
 def index():
@@ -263,10 +283,10 @@ def login():
 
         otp = send_otp(mobile)
 
-        session["mobile"] = mobile
-        session["role"] = user["role"]
-        session["otp"] = str(otp)
-        session["otp_time"] = time.time()
+        send_otp(mobile)
+
+session["mobile"] = mobile
+session["role"] = user["role"]
 
         return redirect("/otp")
 
@@ -282,15 +302,7 @@ def otp():
 
         entered_otp = request.form["otp"]
 
-        # OTP expiry (2 minutes)
-        if time.time() - session.get("otp_time", 0) > 120:
-            session.clear()
-            return "❌ OTP expired. Please login again."
-
-        if entered_otp == session.get("otp"):
-
-            session.pop("otp", None)
-            session.pop("otp_time", None)
+        if verify_otp(session["mobile"], entered_otp):
 
             if session["role"] == "student":
                 return redirect("/student-dashboard")
@@ -882,4 +894,5 @@ def success():
     return "<h2>Payment Successful ✅</h2>"
 # ================= RUN =================
 if __name__ == "__main__":
+
     app.run(debug=True)
