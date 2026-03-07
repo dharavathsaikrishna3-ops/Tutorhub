@@ -1,1 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Tutor Dashboard | TutorHub</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
+<style>
+
+body{
+font-family:Arial;
+background:#f3f4f6;
+}
+
+.dashboard{
+width:90%;
+margin:auto;
+padding:20px;
+}
+
+.navbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.cards{
+display:flex;
+flex-wrap:wrap;
+gap:20px;
+margin-top:30px;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:12px;
+box-shadow:0 6px 15px rgba(0,0,0,0.08);
+width:260px;
+}
+
+.stars{
+color:gold;
+font-size:20px;
+}
+
+button{
+padding:8px 12px;
+border:none;
+border-radius:6px;
+background:#2563eb;
+color:white;
+cursor:pointer;
+margin-top:10px;
+}
+
+button:hover{
+background:#1e40af;
+}
+
+input{
+width:100%;
+padding:6px;
+margin-top:8px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+.request-count{
+font-size:28px;
+font-weight:bold;
+color:#2563eb;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="dashboard">
+
+<!-- NAVBAR -->
+<div class="navbar">
+<h2>👩‍🏫 TutorHub – Tutor Dashboard</h2>
+<a href="{{ url_for('logout') }}">Logout</a>
+</div>
+
+<div class="cards">
+
+<!-- ONLINE STATUS -->
+<div class="card">
+
+<h3>🟢 Online Status</h3>
+
+{% if is_online == 1 %}
+<p style="color:green;font-weight:bold;">🟢 Online</p>
+{% else %}
+<p style="color:red;font-weight:bold;">🔴 Offline</p>
+{% endif %}
+
+<a href="{{ url_for('toggle_online') }}">
+<button>Toggle Online / Offline</button>
+</a>
+
+</div>
+
+
+<!-- ⭐ RATING -->
+<div class="card">
+
+<h3>⭐ My Rating</h3>
+
+{% if total_reviews > 0 %}
+
+<div class="stars">
+{% for i in range(avg_rating|int) %}
+★
+{% endfor %}
+</div>
+
+<p><b>{{ avg_rating }}</b> / 5</p>
+<p>Total Reviews: {{ total_reviews }}</p>
+
+<a href="{{ url_for('tutor_reviews') }}">
+<button>📝 View Reviews</button>
+</a>
+
+{% else %}
+
+<p>No reviews yet</p>
+
+{% endif %}
+
+</div>
+
+
+<!-- TOTAL SESSIONS -->
+<div class="card">
+
+<h3>📚 Total Sessions</h3>
+
+<p style="font-size:22px;font-weight:bold;">
+{{ total_sessions }}
+</p>
+
+</div>
+
+
+<!-- TOTAL EARNINGS -->
+<div class="card">
+
+<h3>💰 Total Earnings</h3>
+
+<p style="font-size:22px;font-weight:bold;">
+₹ {{ total_earnings }}
+</p>
+
+</div>
+
+
+<!-- WITHDRAW -->
+<div class="card">
+
+<h3>💳 Withdraw Earnings</h3>
+
+<p><b>Available Balance</b></p>
+
+<p style="font-size:18px;font-weight:bold;">
+₹ {{ available_balance }}
+</p>
+
+<form method="POST" action="{{ url_for('withdraw') }}">
+
+<input type="number" name="amount" placeholder="Enter Amount" required>
+
+<button type="submit">Request Withdraw</button>
+
+</form>
+
+</div>
+
+
+<!-- NEW REQUESTS -->
+<div class="card">
+
+<h3>📩 Tuition Requests</h3>
+
+<p class="request-count">
+{{ pending_requests }}
+</p>
+
+<a href="{{ url_for('tutor_requests') }}">
+<button>View Requests</button>
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- 🔔 BUZZER SOUND -->
+<audio id="buzzer" src="{{ url_for('static', filename='buzzer.mp3') }}"></audio>
+
+<script>
+
+function checkNewRequests(){
+
+fetch("/check_new_requests")
+
+.then(response=>response.json())
+
+.then(data=>{
+
+if(data.new_request){
+
+document.getElementById("buzzer").play()
+
+location.reload()
+
+}
+
+})
+
+}
+
+setInterval(checkNewRequests,5000)
+
+</script>
+
+
+</body>
+</html>
