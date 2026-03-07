@@ -1,1 +1,36 @@
 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pay with Razorpay</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+
+<h2>Complete Payment</h2>
+<p>Amount: ₹{{ amount }}</p>
+
+<button id="pay-btn">Pay Now</button>
+
+<script>
+var options = {
+    "key": "{{ key_id }}",
+    "amount": "{{ amount * 100 }}",
+    "currency": "INR",
+    "name": "TutorHub",
+    "description": "Tutor Booking",
+    "order_id": "{{ order_id }}",
+    "handler": function (response){
+        window.location.href = "/payment-success/{{ booking_id }}";
+    }
+};
+
+var rzp = new Razorpay(options);
+document.getElementById('pay-btn').onclick = function(e){
+    rzp.open();
+    e.preventDefault();
+}
+</script>
+
+</body>
+</html>
