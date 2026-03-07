@@ -139,7 +139,7 @@ create_tables()
 def send_otp(mobile):
 
     try:
-       verification = twilio_client.verify.services(
+        verification = twilio_client.verify.services(
             VERIFY_SERVICE_SID
         ).verifications.create(
             to="+91" + mobile,
@@ -154,11 +154,11 @@ def send_otp(mobile):
     except Exception as e:
         print("OTP Sending Failed:", e)
         return False
-        # ================= VERIFY OTP =================
+# ================= VERIFY OTP =================
 def verify_otp(mobile, entered_otp):
 
     try:
-        verification_check = client.verify.services(
+        verification_check = twilio_client.verify.services(
             VERIFY_SERVICE_SID
         ).verification_checks.create(
             to="+91" + mobile,
@@ -173,6 +173,7 @@ def verify_otp(mobile, entered_otp):
     except Exception as e:
         print("OTP Verification Failed:", e)
         return False
+       
 # ================= HOME =================
 @app.route("/")
 def index():
@@ -896,3 +897,4 @@ def success():
 if __name__ == "__main__":
 
     app.run(debug=True)
+
