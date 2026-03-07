@@ -5,23 +5,21 @@ import requests
 import random
 import time
 import math
-import twilio
 
 from flask import Flask, render_template, request, redirect, session
 from datetime import datetime, timedelta
 from math import radians, cos, sin, sqrt, atan2
 from twilio.rest import Client
-account_sid = os.environ.get("TWILIO_ACCOUNT_SID")
-auth_token = os.environ.get("TWILIO_AUTH_TOKEN")
 
-client = Client(account_sid, auth_token)
-
-VERIFY_SERVICE_SID = os.environ.get("TWILIO_VERIFY_SERVICE_SID")
 app = Flask(__name__)
 app.secret_key = "tutorhub_secret_key"
 
-# 🔐 Razorpay Client Setup
+account_sid = os.environ.get("TWILIO_ACCOUNT_SID")
+auth_token = os.environ.get("TWILIO_AUTH_TOKEN")
+
 twilio_client = Client(account_sid, auth_token)
+
+VERIFY_SERVICE_SID = os.environ.get("TWILIO_VERIFY_SERVICE_SID")
 
 razorpay_client = razorpay.Client(
     auth=("rzp_test_SKPN8z2DdFK2Np", "f1nK1fcw6NQj8Ykn6UW1DBjv")
@@ -282,12 +280,11 @@ def login():
         if not user:
             return "❌ Mobile not registered"
 
-        otp = send_otp(mobile)
-
+        # Send OTP
         send_otp(mobile)
 
-session["mobile"] = mobile
-session["role"] = user["role"]
+        session["mobile"] = mobile
+        session["role"] = user["role"]
 
         return redirect("/otp")
 
@@ -897,4 +894,5 @@ def success():
 if __name__ == "__main__":
 
     app.run(debug=True)
+
 
