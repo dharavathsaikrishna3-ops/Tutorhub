@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tutor Requests | TutorHub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="dashboard">
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <h2>📩 Tuition Requests</h2>
+        <a href="/tutor-dashboard">⬅ Back</a>
+    </div>
+
+    <!-- REQUEST CARDS -->
+    <div class="cards">
+
+        {% if requests %}
+
+            {% for r in requests %}
+            <div class="card">
+
+                <p><b>📞 Student Mobile:</b> {{ r.student_mobile }}</p>
+                <p><b>📘 Subject:</b> {{ r.subject }}</p>
+
+                <!-- Status -->
+                <p>
+                    <b>Status:</b>
+
+                    {% if r.status == "accepted" %}
+                        <span style="color:green; font-weight:bold;">
+                            ✅ Accepted
+                        </span>
+
+                    {% elif r.status == "rejected" %}
+                        <span style="color:red; font-weight:bold;">
+                            ❌ Rejected
+                        </span>
+
+                    {% else %}
+                        <span style="color:orange; font-weight:bold;">
+                            ⏳ Pending
+                        </span>
+                    {% endif %}
+                </p>
+
+                <!-- Show Accept/Reject buttons only if pending -->
+                {% if r.status == "pending" %}
+
+                    <a href="/update-booking/{{ r.id }}/accepted">
+                        <button style="background-color:green; color:white; padding:6px 12px; border:none; border-radius:5px;">
+                            Accept
+                        </button>
+                    </a>
+
+                    <a href="/update-booking/{{ r.id }}/rejected">
+                        <button style="background-color:red; color:white; padding:6px 12px; border:none; border-radius:5px;">
+                            Reject
+                        </button>
+                    </a>
+
+                {% endif %}
+
+                <!-- Show Extra Details ONLY after acceptance -->
+                {% if r.status == "accepted" %}
+
+                    <hr style="margin:10px 0;">
+
+                    <p><b>🗓 Date:</b> {{ r.booking_date }}</p>
+                    <p><b>⏰ Time:</b> {{ r.start_time }} - {{ r.end_time }}</p>
+
+                    <p><b>🏠 Address:</b></p>
+
+                    <a href="https://www.google.com/maps/search/?api=1&query={{ r.house }} {{ r.city }} {{ r.pincode }}"
+                       target="_blank"
+                       style="color:blue; text-decoration:underline;">
+
+                        {{ r.house }}, {{ r.city }} - {{ r.pincode }}
+
+                    </a>
+
+                {% endif %}
+
+            </div>
+            {% endfor %}
+
+        {% else %}
+            <p style="padding:20px;">No booking requests yet.</p>
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+</html>
