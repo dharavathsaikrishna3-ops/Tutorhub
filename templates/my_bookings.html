@@ -1,1 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Bookings | TutorHub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="dashboard">
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <h2>📚 My Bookings</h2>
+        <a href="/student-dashboard">⬅ Back</a>
+    </div>
+
+    {% if bookings %}
+    <div class="cards">
+
+        {% for b in bookings %}
+        <div class="card">
+
+            <!-- ================= ACCEPTED ================= -->
+            {% if b.status|lower|trim == "accepted" %}
+
+                <p><b>📞 Tutor Mobile:</b> {{ b.tutor_mobile }}</p>
+                <p><b>📘 Subject:</b> {{ b.subject }}</p>
+
+                <p>
+                    <b>Status:</b>
+                    <span class="status-accepted">Accepted</span>
+                </p>
+
+                <!-- 📲 Contact Buttons -->
+                <a href="https://wa.me/91{{ b.tutor_mobile }}?text=Hi%20I%20booked%20you%20via%20TutorHub"
+                   target="_blank">
+                    <button style="margin-top:10px; background:green;">
+                        💬 Contact on WhatsApp
+                    </button>
+                </a>
+
+                <a href="tel:{{ b.tutor_mobile }}">
+                    <button style="margin-top:10px; background:#2563eb;">
+                        📞 Call Now
+                    </button>
+                </a>
+
+                <!-- ⭐ Add Review Button -->
+                <a href="{{ url_for('add_review', booking_id=b.id) }}">
+                    <button style="margin-top:10px;">
+                        ⭐ Add Review
+                    </button>
+                </a>
+
+            <!-- ================= REJECTED ================= -->
+            {% elif b.status|lower|trim == "rejected" %}
+
+                <p><b>📞 Tutor Mobile:</b> 🔒 Hidden until accepted</p>
+                <p><b>📘 Subject:</b> {{ b.subject }}</p>
+
+                <p>
+                    <b>Status:</b>
+                    <span class="status-rejected">Rejected</span>
+                </p>
+
+            <!-- ================= PENDING ================= -->
+            {% else %}
+
+                <p><b>📞 Tutor Mobile:</b> 🔒 Hidden until accepted</p>
+                <p><b>📘 Subject:</b> {{ b.subject }}</p>
+
+                <p>
+                    <b>Status:</b>
+                    <span class="status-pending">Pending</span>
+                </p>
+
+            {% endif %}
+
+        </div>
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+        <div style="padding:30px; text-align:center;">
+            <p>No bookings yet.</p>
+        </div>
+    {% endif %}
+
+</div>
+
+</body>
+</html>
 
