@@ -1,1 +1,37 @@
 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Post Requirement | TutorHub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="form-container">
+    <h2>📝 Post Tuition Requirement</h2>
+
+    <form method="POST">
+
+        <input type="text" name="subject" placeholder="Subject Needed" required>
+
+        <input type="text" name="class" placeholder="Class (e.g., 10th, Inter, BTech)" required>
+
+        <select name="mode" required>
+            <option value="">Select Mode</option>
+            <option value="home">Home</option>
+            <option value="online">Online</option>
+            <option value="both">Both</option>
+        </select>
+
+        <input type="text" name="location" placeholder="Location" required>
+
+        <textarea name="description" placeholder="Additional Details" rows="4"></textarea>
+
+        <button type="submit">Post Requirement</button>
+
+    </form>
+
+</div>
+
+</body>
+</html>
