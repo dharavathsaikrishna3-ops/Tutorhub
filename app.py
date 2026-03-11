@@ -290,26 +290,48 @@ def login():
 
     return render_template("login.html")
 # ================= OTP =================
-@app.route("/otp", methods=["GET", "POST"])
-def otp():
+def send_otp(mobile):
+    otp = random.randint(100000, 999999)  # 6 digit OTP
 
-    if "mobile" not in session:
-        return redirect("/login")
+    url = "https://www.fast2sms.com/dev/bulkV2"
 
-    if request.method == "POST":
+    headers = {
+        "authorization": os.environ.get("FAST2SMS_KEY"),  # from Render env
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
 
-        entered_otp = request.form["otp"]
+    payload = {
+        "variables_values": str(otp),
+        "route": "otp",
+        "numbers": str(mobile)
+    }
 
-        if verify_otp(session["mobile"], entered_otp):
+    try:
+        response = requests.post(
+            url,
+            data=payload,
+            headers=headers,
+            timeout=15
+        )
+        result = response.json()
+        print("Fast2SMS Response:", result)
 
-            if session["role"] == "student":
-                return redirect("/student-dashboard")
-            else:
-                return redirect("/tutor-dashboard")
+        if result.get("return") == True:
+            print(f"✅ OTP {otp} sent successfully to {mobile}")
+        else:
+            print(f"❌ Failed to send OTP: {result.get('message')}")
 
-        return "❌ Wrong OTP"
+    except Exception as e:
+        print(f"❌ Exception: {e}")
 
-    return render_template("otp.html")
+    return otp
+@app.route("/test-otp")
+def test_otp():
+    try:
+        result = send_otp("YOUR_10_DIGIT_MOBILE")  # put your number
+        return f"✅ OTP sent! Check your mobile. OTP={result}"
+    except Exception as e:
+        return f"❌ Error: {str(e)}"
 # ================= STUDENT DASHBOARD =================
 @app.route("/student-dashboard")
 def student_dashboard():
@@ -894,5 +916,6 @@ def success():
 if __name__ == "__main__":
 
     app.run(debug=True)
+
 
 
