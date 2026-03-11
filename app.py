@@ -265,9 +265,7 @@ def tutor_register():
 # ================= LOGIN =================
 @app.route("/login", methods=["GET", "POST"])
 def login():
-
     if request.method == "POST":
-
         mobile = request.form["mobile"]
 
         conn = get_db()
@@ -278,53 +276,50 @@ def login():
         conn.close()
 
         if not user:
-            return "❌ Mobile not registered"
+            return "❌ Mobile not registered. Please register first."
 
-        # Send OTP
-        send_otp(mobile)
+        otp = send_otp(mobile)
 
+        # ✅ Set session BEFORE redirect
         session["mobile"] = mobile
         session["role"] = user["role"]
+        session["otp"] = str(otp)
+        session["otp_time"] = time.time()
+
+        print(f"Session set: {session['mobile']}, OTP: {otp}")  # debug log
 
         return redirect("/otp")
 
     return render_template("login.html")
 # ================= OTP =================
-def send_otp(mobile):
-    otp = random.randint(100000, 999999)  # 6 digit OTP
+@app.route("/otp", methods=["GET", "POST"])
+def otp():
+    # ✅ If session missing, go back to login
+    if "mobile" not in session:
+        return redirect("/login")
 
-    url = "https://www.fast2sms.com/dev/bulkV2"
+    error = None
 
-    headers = {
-        "authorization": os.environ.get("FAST2SMS_KEY"),  # from Render env
-        "Content-Type": "application/x-www-form-urlencoded"
-    }
+    if request.method == "POST":
+        entered_otp = request.form["otp"]
 
-    payload = {
-        "variables_values": str(otp),
-        "route": "otp",
-        "numbers": str(mobile)
-    }
+        # OTP expiry check (5 minutes)
+        if time.time() - session.get("otp_time", 0) > 300:
+            session.clear()
+            return redirect("/login")
 
-    try:
-        response = requests.post(
-            url,
-            data=payload,
-            headers=headers,
-            timeout=15
-        )
-        result = response.json()
-        print("Fast2SMS Response:", result)
+        if entered_otp == session.get("otp"):
+            session.pop("otp", None)
+            session.pop("otp_time", None)
 
-        if result.get("return") == True:
-            print(f"✅ OTP {otp} sent successfully to {mobile}")
-        else:
-            print(f"❌ Failed to send OTP: {result.get('message')}")
+            if session["role"] == "student":
+                return redirect("/student-dashboard")
+            else:
+                return redirect("/tutor-dashboard")
 
-    except Exception as e:
-        print(f"❌ Exception: {e}")
+        error = "❌ Wrong OTP. Try again."
 
-    return otp
+    return render_template("otp.html", error=error)
 @app.route("/test-otp")
 def test_otp():
     try:
@@ -916,6 +911,7 @@ def success():
 if __name__ == "__main__":
 
     app.run(debug=True)
+
 
 
 
