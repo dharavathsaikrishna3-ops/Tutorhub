@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,9 +5,7 @@
     <title>OTP Verify | TutorHub</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-
 <body class="center-body">
-
 <div class="home-container">
 
     <!-- Logo -->
@@ -18,42 +15,54 @@
     <h1 class="title">TutorHub</h1>
 
     <!-- Tagline -->
-    <p class="tagline">
-        Find the Right Tutor Near You
-    </p>
+    <p class="tagline">Find the Right Tutor Near You</p>
 
     <!-- OTP Card -->
     <div class="login-card">
-
         <h2>Verify OTP</h2>
 
         <p class="otp-text">
-            OTP sent to <b>{{ session.mobile }}</b>
+            OTP sent to <b>{{ session.get('mobile', '') }}</b>
         </p>
 
-        <form method="POST">
+        <!-- ✅ Show error if wrong OTP -->
+        {% if error %}
+            <p style="color:red; font-size:14px; margin-bottom:10px;">
+                {{ error }}
+            </p>
+        {% endif %}
 
-            <input 
+        <!-- ✅ Show success message -->
+        {% if success %}
+            <p style="color:green; font-size:14px; margin-bottom:10px;">
+                {{ success }}
+            </p>
+        {% endif %}
+
+        <form method="POST">
+            <input
                 type="text"
                 name="otp"
-                placeholder="Enter 4 Digit OTP"
-                maxlength="4"
+                placeholder="Enter 6 Digit OTP"
+                maxlength="6"
+                minlength="6"
+                pattern="[0-9]{6}"
+                inputmode="numeric"
+                autocomplete="one-time-code"
                 required>
 
             <button type="submit" class="btn-login">
-                Verify OTP
+                Verify OTP ✅
             </button>
-
         </form>
 
+        <!-- ✅ Resend OTP -->
         <div class="resend">
-            Didn’t receive OTP?  
-            <a href="/login">Resend OTP</a>
+            Didn't receive OTP?
+            <a href="/resend-otp">Resend OTP</a>
         </div>
 
     </div>
-
 </div>
-
 </body>
 </html>
