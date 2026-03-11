@@ -292,6 +292,44 @@ def login():
 
     return render_template("login.html")
 # ================= OTP =================
+@app.route("/resend-otp")
+def resend_otp():
+    if "mobile" not in session:
+        return redirect("/login")
+
+    # Resend OTP to same mobile
+    otp = send_otp(session["mobile"])
+    session["otp"] = str(otp)
+    session["otp_time"] = time.time()
+
+    return redirect("/otp")
+    @app.route("/otp", methods=["GET", "POST"])
+def otp():
+    if "mobile" not in session:
+        return redirect("/login")
+
+    error = None
+
+    if request.method == "POST":
+        entered_otp = request.form["otp"]
+
+        # OTP expiry (5 minutes)
+        if time.time() - session.get("otp_time", 0) > 300:
+            session.clear()
+            return redirect("/login")
+
+        if entered_otp == session.get("otp"):
+            session.pop("otp", None)
+            session.pop("otp_time", None)
+
+            if session["role"] == "student":
+                return redirect("/student-dashboard")
+            else:
+                return redirect("/tutor-dashboard")
+
+        error = "❌ Wrong OTP. Please try again."
+
+    return render_template("otp.html", error=error)
 @app.route("/otp", methods=["GET", "POST"])
 def otp():
     # ✅ If session missing, go back to login
@@ -911,6 +949,7 @@ def success():
 if __name__ == "__main__":
 
     app.run(debug=True)
+
 
 
 
