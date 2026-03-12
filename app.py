@@ -467,11 +467,12 @@ def find_tutors():
         syllabus = request.form["syllabus"]
 
         conn = get_db()
-        student = conn.execute("""
-            SELECT latitude, longitude FROM users WHERE mobile=?
-        """, (session["mobile"],)).fetchone()
+        student = conn.execute(
+            "SELECT latitude, longitude FROM users WHERE mobile=?",
+            (session["mobile"],)
+        ).fetchone()
 
-        if not student or student["latitude"] is None or student["longitude"] is None:
+        if not student or student["latitude"] is None:
             conn.close()
             return "❌ Student location not found"
 
@@ -482,14 +483,12 @@ def find_tutors():
             SELECT u.*, IFNULL(AVG(r.rating),0) as avg_rating, COUNT(r.id) as total_reviews
             FROM users u
             LEFT JOIN reviews r ON u.mobile = r.tutor_mobile
-            WHERE u.role='tutor'
-            AND u.is_online=1
+            WHERE u.role='tutor' AND u.is_online=1
             AND LOWER(u.subject) LIKE LOWER(?)
             AND (u.mode=? OR u.mode='both')
             AND LOWER(u.syllabus)=LOWER(?)
             GROUP BY u.mobile
         """, (f"%{subject}%", mode, syllabus)).fetchall()
-
         conn.close()
 
         def calculate_distance(lat1, lon1, lat2, lon2):
@@ -497,8 +496,7 @@ def find_tutors():
             dlat = radians(lat2 - lat1)
             dlon = radians(lon2 - lon1)
             a = sin(dlat/2)**2 + cos(radians(lat1)) * cos(radians(lat2)) * sin(dlon/2)**2
-            c = 2 * atan2(sqrt(a), sqrt(1-a))
-            return R * c
+            return R * 2 * atan2(sqrt(a), sqrt(1-a))
 
         for tutor in all_tutors:
             if tutor["latitude"] is not None and tutor["longitude"] is not None:
@@ -507,12 +505,11 @@ def find_tutors():
                     float(tutor["latitude"]), float(tutor["longitude"])
                 )
                 if distance <= 10:
-                    tutor_dict = dict(tutor)
-                    tutor_dict["distance"] = round(distance, 2)
-                    tutors.append(tutor_dict)
+                    t = dict(tutor)
+                    t["distance"] = round(distance, 2)
+                    tutors.append(t)
 
-    # ✅ FIXED: changed find_tutors.html to find_tutor.html
-    return render_template("find_tutor.html", tutors=tutors)
+    return render_template("find_tutors.html", tutors=tutors)
 
 # ================= TOGGLE ONLINE =================
 @app.route("/toggle-online")
@@ -794,4 +791,5 @@ def success():
 # ================= RUN =================
 if __name__ == "__main__":
     app.run(debug=True)
+
 
