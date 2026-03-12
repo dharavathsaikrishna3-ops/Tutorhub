@@ -511,8 +511,8 @@ def find_tutors():
                     tutor_dict["distance"] = round(distance, 2)
                     tutors.append(tutor_dict)
 
-    return render_template("find_tutors.html", tutors=tutors)
-
+    # ✅ FIXED: changed find_tutors.html to find_tutor.html
+    return render_template("find_tutor.html", tutors=tutors)
 
 # ================= TOGGLE ONLINE =================
 @app.route("/toggle-online")
@@ -794,3 +794,4 @@ def success():
 # ================= RUN =================
 if __name__ == "__main__":
     app.run(debug=True)
+
